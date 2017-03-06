@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Inventory App</string>
     <string name="stock_empty">There\'s nothing in the stock</string>
+
+    <!-- Menu Strings -->
+    <string name="insert_dummyData">Insert Dummy Data</string>
+    <string name="delete_AllData">Delete All List</string>
+    <string name="delete">Delete</string>
 </resources>
