@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Inventory App</string>
+    <string name="stock_empty">There\'s nothing in the stock</string>
 </resources>
