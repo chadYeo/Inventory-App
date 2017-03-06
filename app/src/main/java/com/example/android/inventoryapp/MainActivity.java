@@ -1,13 +1,13 @@
 package com.example.android.inventoryapp;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.widget.Toolbar;
+import android.widget.ListView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,6 +25,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        ListView listView = (ListView) findViewById(R.id.listView);
+        View emptyView = findViewById(R.id.empty_textView);
+        listView.setEmptyView(emptyView);
+
+
     }
 
     @Override
