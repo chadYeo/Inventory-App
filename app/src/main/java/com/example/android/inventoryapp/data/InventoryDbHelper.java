@@ -22,12 +22,11 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         String SQL_CREATE_ENTRIES =
-                "CREATE TABLE " + " ("
+                "CREATE TABLE " + ItemEntry.TABLE_NAME + " ("
                         + ItemEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                         + ItemEntry.COLUMN_NAME + " TEXT NOT NULL, "
                         + ItemEntry.COLUMN_PRICE + " TEXT NOT NULL DEFAULT 0, "
-                        + ItemEntry.COLUMN_QTY + " Text NOT NULL DEFAULT 0, "
-                        + ")";
+                        + ItemEntry.COLUMN_QTY + " Text NOT NULL DEFAULT 0);";
 
         db.execSQL(SQL_CREATE_ENTRIES);
     }
