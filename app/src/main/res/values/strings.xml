@@ -6,4 +6,10 @@
     <string name="insert_dummyData">Insert Dummy Data</string>
     <string name="delete_AllData">Delete All List</string>
     <string name="delete">Delete</string>
+
+    <!-- Edit Layout Strings -->
+    <string name="name_of_item">Name of Item</string>
+    <string name="price">Price</string>
+    <string name="quantity">Quantity</string>
+
 </resources>

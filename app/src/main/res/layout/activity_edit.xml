@@ -15,20 +15,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:weightSum="1">
+        android:layout_marginBottom="8dp">
 
         <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
+            android:id="@+id/nameOfProduct_textView"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
+            android:layout_weight="1"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text" />
+            android:text="@string/name_of_item"
+            android:gravity="center_horizontal" />
 
         <EditText
-            android:id="@+id/textid"
-            android:layout_width="wrap_content"
+            android:id="@+id/nameOfProduct_editText"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:ems="10" />
     </LinearLayout>
 
@@ -36,22 +38,25 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:gravity="center_horizontal">
 
         <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
+            android:id="@+id/price_textView"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
+            android:layout_weight="1"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text" />
+            android:text="@string/price"
+            android:gravity="center_horizontal" />
 
         <EditText
-            android:layout_width="wrap_content"
+            android:id="@+id/price_editText"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:inputType="numberDecimal"
-            android:ems="10"
-            android:id="@+id/editText4" />
+            android:ems="10" />
 
     </LinearLayout>
 
@@ -59,20 +64,23 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:gravity="center_horizontal">
 
         <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
+            android:id="@+id/qty_textView"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
+            android:layout_weight="1"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text" />
+            android:text="@string/quantity"
+            android:gravity="center_horizontal" />
 
         <EditText
-            android:id="@+id/editText3"
-            android:layout_width="wrap_content"
+            android:id="@+id/qty_editText"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:inputType="number"
             android:ems="10" />
     </LinearLayout>
