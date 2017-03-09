@@ -1,6 +1,7 @@
 package com.example.android.inventoryapp;
 
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -11,9 +12,9 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.android.inventoryapp.data.InventoryContract.ItemEntry;
@@ -45,6 +46,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mCursorAdapter = new InventoryCursorAdapter(this, null);
         listView.setAdapter(mCursorAdapter);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, EditActivity.class);
+
+                Uri currentUri = ContentUris.withAppendedId(ItemEntry.CONTENT_URI, id);
+
+                intent.setData(currentUri);
+
+                startActivity(intent);
+            }
+        });
+
         getLoaderManager().initLoader(INVENTORY_LOADER, null, this);
     }
 
@@ -59,8 +73,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -69,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         switch (item.getItemId()) {
             case R.id.insert_dummyData:
                 insertItem();
+                return true;
+            case R.id.delete_AllData:
                 return true;
         }
         return super.onOptionsItemSelected(item);

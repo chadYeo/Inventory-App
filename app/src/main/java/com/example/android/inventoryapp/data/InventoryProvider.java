@@ -16,6 +16,7 @@ import com.example.android.inventoryapp.data.InventoryContract.ItemEntry;
 public class InventoryProvider extends ContentProvider{
 
     private static final String LOG_TAG = InventoryProvider.class.getSimpleName();
+
     private static final int INVENTORY = 100;
     private static final int INVENTORY_ID = 101;
 
@@ -129,6 +130,53 @@ public class InventoryProvider extends ContentProvider{
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case INVENTORY:
+                return updateInventory(uri, values, selection, selectionArgs);
+            case INVENTORY_ID:
+                selection = ItemEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return updateInventory(uri, values, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Update is not supported for " + uri);
+        }
+    }
+
+    private int updateInventory(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        if (values.containsKey(ItemEntry.COLUMN_NAME)) {
+            String item = values.getAsString(ItemEntry.COLUMN_NAME);
+            if (item == null) {
+                throw new IllegalArgumentException("Item requires a name");
+            }
+        }
+
+        if (values.containsKey(ItemEntry.COLUMN_PRICE)) {
+            Integer price = values.getAsInteger(ItemEntry.COLUMN_PRICE);
+            if (price == null) {
+                throw new IllegalArgumentException("Item requires price");
+            }
+        }
+
+        if (values.containsKey(ItemEntry.COLUMN_QTY)) {
+            Integer qty = values.getAsInteger(ItemEntry.COLUMN_QTY);
+            if (qty == null) {
+                throw new IllegalArgumentException("Item requires qty");
+            }
+        }
+
+        if (values.size() == 0) {
+            return 0;
+        }
+
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+        int rowsUpdated = database.update(ItemEntry.TABLE_NAME, values, selection, selectionArgs);
+
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsUpdated;
     }
 }
