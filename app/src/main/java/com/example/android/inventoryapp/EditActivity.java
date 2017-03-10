@@ -16,11 +16,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.inventoryapp.data.InventoryContract.ItemEntry;
 
 public class EditActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+
+    private static final String LOGT_TAG = EditActivity.class.getSimpleName();
 
     private static final int EXISTING_PET_LAODER = 0;
 
@@ -29,6 +33,10 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
     private EditText mItemName;
     private EditText mPrice;
     private EditText mQty;
+
+    private ImageButton mQtyInc_button;
+    private ImageButton mQtyDec_button;
+
     private Button mOrderButton;
 
     @Override
@@ -50,6 +58,26 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         mItemName = (EditText) findViewById(R.id.nameOfProduct_editText);
         mPrice = (EditText) findViewById(R.id.price_editText);
         mQty = (EditText) findViewById(R.id.qty_editText);
+        mQty.setText("0", TextView.BufferType.EDITABLE);
+
+        mQtyInc_button = (ImageButton) findViewById(R.id.qtyInc_imageButton);
+        mQtyInc_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int qty = Integer.parseInt(mQty.getText().toString());
+                mQty.setText(String.valueOf(qty + 1));
+            }
+        });
+
+        mQtyDec_button = (ImageButton) findViewById(R.id.qtyDec_imageButton);
+        mQtyDec_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int qty = Integer.parseInt(mQty.getText().toString());
+                mQty.setText(String.valueOf(qty-1));
+            }
+        });
+
         mOrderButton = (Button) findViewById(R.id.order_button);
         mOrderButton.setOnClickListener(new View.OnClickListener() {
             @Override
