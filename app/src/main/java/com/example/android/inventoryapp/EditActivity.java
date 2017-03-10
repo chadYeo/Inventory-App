@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -28,7 +29,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
     private EditText mItemName;
     private EditText mPrice;
     private EditText mQty;
-    private Button mSoldButton;
+    private Button mOrderButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,22 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         mItemName = (EditText) findViewById(R.id.nameOfProduct_editText);
         mPrice = (EditText) findViewById(R.id.price_editText);
         mQty = (EditText) findViewById(R.id.qty_editText);
-        mSoldButton = (Button) findViewById(R.id.sold_button);
+        mOrderButton = (Button) findViewById(R.id.order_button);
+        mOrderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, "order@order.com");
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Requesting for an order");
+
+                String name = mItemName.getText().toString();
+                String qty = mQty.getText().toString();
+
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "I need to order more " + name + "\n" + "I have only " + qty + " in stock");
+                emailIntent.setType("text/plain");
+                startActivity(emailIntent);
+            }
+        });
     }
 
     @Override
@@ -76,10 +92,26 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
                 return true;
             case R.id.save:
                 addInfoEntered();
+                return true;
+            case R.id.delete_data:
+                deleteItem();
                 finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteItem() {
+        if (mCurrentUri != null) {
+            int mRowsDeleted = getContentResolver().delete(mCurrentUri, null, null);
+
+            if (mRowsDeleted == 0) {
+                Toast.makeText(this, getString(R.string.editor_delete_item_failed), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getString(R.string.editor_delete_item_successful), Toast.LENGTH_SHORT).show();
+            }
+        }
+        finish();
     }
 
     private void addInfoEntered() {
@@ -90,6 +122,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         if (mCurrentUri == null &&
                 TextUtils.isEmpty(itemString) && TextUtils.isEmpty(priceString) &&
                 TextUtils.isEmpty(qtyString)) {
+            Toast.makeText(this, R.string.editor_empty_info, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -105,6 +138,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
                 Toast.makeText(this, "Error with saving Item", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Item Saved", Toast.LENGTH_SHORT).show();
+                finish();
             }
         } else {
             int rowAffected = getContentResolver().update(mCurrentUri, values, null, null);
@@ -113,9 +147,9 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
                 Toast.makeText(this, getString(R.string.editor_update_item_failed), Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, getString(R.string.editor_update_item_successful), Toast.LENGTH_SHORT).show();
+                finish();
             }
         }
-
     }
 
     @Override

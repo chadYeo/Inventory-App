@@ -125,7 +125,27 @@ public class InventoryProvider extends ContentProvider{
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+        int rowsDeleted;
+
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case INVENTORY:
+                rowsDeleted = database.delete(ItemEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case INVENTORY_ID:
+                selection = ItemEntry._ID + "=?";
+                selectionArgs= new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                rowsDeleted = database.delete(ItemEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            default:
+                throw new IllegalArgumentException("Delete is not supported for " + uri);
+        }
+        if (rowsDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsDeleted;
     }
 
     @Override
@@ -153,7 +173,7 @@ public class InventoryProvider extends ContentProvider{
         }
 
         if (values.containsKey(ItemEntry.COLUMN_PRICE)) {
-            Integer price = values.getAsInteger(ItemEntry.COLUMN_PRICE);
+            String price = values.getAsString(ItemEntry.COLUMN_PRICE);
             if (price == null) {
                 throw new IllegalArgumentException("Item requires price");
             }

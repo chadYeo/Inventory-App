@@ -16,5 +16,9 @@
 
     <string name="editor_update_item_failed">Error with updating item</string>
     <string name="editor_update_item_successful">Item Updated</string>
+    <string name="editor_delete_item_failed">Error with deleting items</string>
+    <string name="editor_delete_item_successful">Item Deleted</string>
+    <string name="editor_empty_info">Please enter all information</string>
+    <string name="order">Place an Order</string>
 
 </resources>

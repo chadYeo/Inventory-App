@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.android.inventoryapp.data.InventoryContract.ItemEntry;
 
@@ -65,10 +66,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private void insertItem() {
         ContentValues values = new ContentValues();
         values.put(ItemEntry.COLUMN_NAME, "Test HeadPhone");
-        values.put(ItemEntry.COLUMN_PRICE, "Test $100");
-        values.put(ItemEntry.COLUMN_QTY, "TEST 100");
+        values.put(ItemEntry.COLUMN_PRICE, "100");
+        values.put(ItemEntry.COLUMN_QTY, "100");
 
         Uri newUri = getContentResolver().insert(ItemEntry.CONTENT_URI, values);
+    }
+
+    public void deleteAllItems() {
+        int mRowsDeleted = getContentResolver().delete(ItemEntry.CONTENT_URI, null, null);
+
+        if (mRowsDeleted == 0) {
+            Toast.makeText(this, getString(R.string.editor_delete_item_failed), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, getString(R.string.editor_delete_item_successful), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -84,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 insertItem();
                 return true;
             case R.id.delete_AllData:
+                deleteAllItems();
                 return true;
         }
         return super.onOptionsItemSelected(item);
