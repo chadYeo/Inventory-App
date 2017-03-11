@@ -17,6 +17,7 @@ public class InventoryContract {
     public static final String PATH_INVENTORY = "inventory";
 
     public static class ItemEntry implements BaseColumns {
+        public static final String COLUMN_IMAGE = "image";
         public static final String TABLE_NAME = "Inventory";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_PRICE = "price";

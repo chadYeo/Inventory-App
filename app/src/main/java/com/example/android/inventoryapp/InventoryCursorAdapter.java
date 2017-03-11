@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,18 +35,24 @@ public class InventoryCursorAdapter extends CursorAdapter{
 
         mContext = context;
 
+        ImageView imageProduct = (ImageView) view.findViewById(R.id.list_item_imageView);
         TextView nameProduct = (TextView) view.findViewById(R.id.productName_textView);
         TextView priceProduct = (TextView) view.findViewById(R.id.price_textView);
         final TextView qtyProduct = (TextView) view.findViewById(R.id.qty_count_textView);
 
+        int image_columnIndex = cursor.getColumnIndex(ItemEntry.COLUMN_IMAGE);
         int name_columnIndex = cursor.getColumnIndex(ItemEntry.COLUMN_NAME);
         int price_columnIndex = cursor.getColumnIndex(ItemEntry.COLUMN_PRICE);
         int qty_columnIndex = cursor.getColumnIndex(ItemEntry.COLUMN_QTY);
 
+        final String imagePath = cursor.getString(image_columnIndex);
         final String name = cursor.getString(name_columnIndex);
         final Float price = cursor.getFloat(price_columnIndex);
         final Integer qty = cursor.getInt(qty_columnIndex);
 
+        if (imagePath != null) {
+            imageProduct.setImageURI(Uri.parse(imagePath));
+        }
         nameProduct.setText(name);
         priceProduct.setText(Float.toString(price));
         qtyProduct.setText(Integer.toString(qty));
@@ -58,6 +65,7 @@ public class InventoryCursorAdapter extends CursorAdapter{
                     Object ojb = v.getTag();
                     String st = ojb.toString();
                     ContentValues values = new ContentValues();
+                    values.put(ItemEntry.COLUMN_IMAGE, imagePath);
                     values.put(ItemEntry.COLUMN_NAME, name);
                     values.put(ItemEntry.COLUMN_PRICE, price);
                     values.put(ItemEntry.COLUMN_QTY, qty >= 1? qty-1: 0);

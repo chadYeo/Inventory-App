@@ -107,7 +107,7 @@ public class InventoryProvider extends ContentProvider{
             throw new IllegalArgumentException("Requires a QTY");
         }
 
-        // Get writeable database
+        // Get writable database
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
 
         // Insert the new item with the given values

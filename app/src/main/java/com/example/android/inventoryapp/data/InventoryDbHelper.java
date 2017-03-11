@@ -26,7 +26,8 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
                         + ItemEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                         + ItemEntry.COLUMN_NAME + " TEXT NOT NULL, "
                         + ItemEntry.COLUMN_PRICE + " TEXT NOT NULL DEFAULT 0, "
-                        + ItemEntry.COLUMN_QTY + " Text NOT NULL DEFAULT 0);";
+                        + ItemEntry.COLUMN_QTY + " Text NOT NULL DEFAULT 0, "
+                        + ItemEntry.COLUMN_IMAGE + " Text);";
 
         db.execSQL(SQL_CREATE_ENTRIES);
     }

@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         String[] projection = {
                 ItemEntry._ID,
+                ItemEntry.COLUMN_IMAGE,
                 ItemEntry.COLUMN_NAME,
                 ItemEntry.COLUMN_PRICE,
                 ItemEntry.COLUMN_QTY
