@@ -66,7 +66,7 @@ public class InventoryCursorAdapter extends CursorAdapter{
 
                     int rowsAffected = mContext.getContentResolver().update(currentUri, values, null, null);
                     if (rowsAffected == 0 || qty == 0) {
-                        Toast.makeText(mContext, "Error selling item", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "There's no QTY to sell", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

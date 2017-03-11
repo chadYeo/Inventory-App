@@ -20,5 +20,9 @@
     <string name="editor_delete_item_successful">Item Deleted</string>
     <string name="editor_empty_info">Please enter all information</string>
     <string name="order">Place an Order</string>
+    <string name="alert_dialog_message">You don\'t want to save?</string>
+    <string name="disregard">Disregard</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_dialog_msg">You sure you want to delete?</string>
 
 </resources>

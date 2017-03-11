@@ -1,8 +1,11 @@
 package com.example.android.inventoryapp;
 
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -13,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,6 +42,17 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
     private ImageButton mQtyDec_button;
 
     private Button mOrderButton;
+
+    private boolean mItemhasChanged = false;
+
+    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            mItemhasChanged = true;
+            return false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +109,28 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
                 startActivity(emailIntent);
             }
         });
+
+        mItemName.setOnTouchListener(mTouchListener);
+        mPrice.setOnTouchListener(mTouchListener);
+        mQty.setOnTouchListener(mTouchListener);
+        mQtyInc_button.setOnTouchListener(mTouchListener);
+        mQtyDec_button.setOnTouchListener(mTouchListener);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!mItemhasChanged) {
+            super.onBackPressed();
+            return;
+        }else {
+            DialogInterface.OnClickListener disregardButtonClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int i) {
+                    finish();
+                }
+            };
+            showUnsavedChangesDialog(disregardButtonClickListener);
+        }
     }
 
     @Override
@@ -116,17 +153,62 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                if (!mItemhasChanged) {
+                    NavUtils.navigateUpFromSameTask(EditActivity.this);
+                    return true;
+                }
+                DialogInterface.OnClickListener disregardButtonClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        NavUtils.navigateUpFromSameTask(EditActivity.this);
+                    }
+                };
+                showUnsavedChangesDialog(disregardButtonClickListener);
                 return true;
             case R.id.save:
                 addInfoEntered();
                 return true;
             case R.id.delete_data:
-                deleteItem();
-                finish();
+                showDeleteDialog();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showUnsavedChangesDialog(DialogInterface.OnClickListener discardButtonClickListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.alert_dialog_message);
+        builder.setPositiveButton(R.string.disregard, discardButtonClickListener);
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void showDeleteDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_dialog_msg);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteItem();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     private void deleteItem() {
@@ -147,35 +229,32 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         String priceString = mPrice.getText().toString().trim();
         String qtyString = mQty.getText().toString().trim();
 
-        if (mCurrentUri == null &&
-                TextUtils.isEmpty(itemString) && TextUtils.isEmpty(priceString) &&
-                TextUtils.isEmpty(qtyString)) {
+        if (TextUtils.isEmpty(itemString) || TextUtils.isEmpty(priceString)) {
             Toast.makeText(this, R.string.editor_empty_info, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        ContentValues values = new ContentValues();
-        values.put(ItemEntry.COLUMN_NAME, itemString);
-        values.put(ItemEntry.COLUMN_PRICE, priceString);
-        values.put(ItemEntry.COLUMN_QTY, qtyString);
-
-        if (mCurrentUri == null) {
-            Uri uri = getContentResolver().insert(ItemEntry.CONTENT_URI, values);
-
-            if (uri == null) {
-                Toast.makeText(this, "Error with saving Item", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Item Saved", Toast.LENGTH_SHORT).show();
-                finish();
-            }
         } else {
-            int rowAffected = getContentResolver().update(mCurrentUri, values, null, null);
+            ContentValues values = new ContentValues();
+            values.put(ItemEntry.COLUMN_NAME, itemString);
+            values.put(ItemEntry.COLUMN_PRICE, priceString);
+            values.put(ItemEntry.COLUMN_QTY, qtyString);
 
-            if (rowAffected == 0) {
-                Toast.makeText(this, getString(R.string.editor_update_item_failed), Toast.LENGTH_SHORT).show();
+            if (mCurrentUri == null) {
+                Uri uri = getContentResolver().insert(ItemEntry.CONTENT_URI, values);
+
+                if (uri == null) {
+                    Toast.makeText(this, "Error with saving Item", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Item Saved", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
             } else {
-                Toast.makeText(this, getString(R.string.editor_update_item_successful), Toast.LENGTH_SHORT).show();
-                finish();
+                int rowAffected = getContentResolver().update(mCurrentUri, values, null, null);
+
+                if (rowAffected == 0) {
+                    Toast.makeText(this, getString(R.string.editor_update_item_failed), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, getString(R.string.editor_update_item_successful), Toast.LENGTH_SHORT).show();
+                    finish();
+                }
             }
         }
     }
