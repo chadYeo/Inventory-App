@@ -8,15 +8,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -101,7 +98,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onClick(View v) {
                 int qty = Integer.parseInt(mQty.getText().toString());
-                mQty.setText(String.valueOf(qty-1));
+                mQty.setText(String.valueOf(qty >= 1? qty - 1 : 0));
             }
         });
 
@@ -237,9 +234,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
             String price = cursor.getString(priceColumnIndex);
             int qty = cursor.getInt(qtyColumnIndex);
 
-            if (mImageUri != null) {
-                mImageView.setImageURI(Uri.parse(imageUri));
-            }
+            mImageView.setImageURI(Uri.parse(imageUri));
             mItemName.setText(name);
             mPrice.setText(price);
             mQty.setText(Integer.toString(qty));
@@ -307,14 +302,15 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         String itemString = mItemName.getText().toString().trim();
         String priceString = mPrice.getText().toString().trim();
         String qtyString = mQty.getText().toString().trim();
+        String imageString = String.valueOf(mImageUri);
 
-        if (TextUtils.isEmpty(itemString) || TextUtils.isEmpty(priceString)) {
+        if (TextUtils.isEmpty(itemString) || TextUtils.isEmpty(priceString)
+                || TextUtils.isEmpty(String.valueOf(mImageUri))
+                || TextUtils.isEmpty(String.valueOf(mQty))) {
             Toast.makeText(this, R.string.editor_empty_info, Toast.LENGTH_SHORT).show();
         } else {
             ContentValues values = new ContentValues();
-            if (mImageUri != null) {
-                values.put(ItemEntry.COLUMN_IMAGE, mImageUri.toString());
-            };
+            values.put(ItemEntry.COLUMN_IMAGE, imageString);
             values.put(ItemEntry.COLUMN_NAME, itemString);
             values.put(ItemEntry.COLUMN_PRICE, priceString);
             values.put(ItemEntry.COLUMN_QTY, qtyString);
